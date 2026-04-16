@@ -5,10 +5,10 @@
 ```
 用語集 (CSV)
   └─[Step 1]─→ 歌詞 JSON (Claude API)
-      └─[Step 2]─→ mp3 (Suno / Playwright)
-          └─[Step 3]─→ タイムコード付き JSON (OpenAI Whisper API)
-              ├─[Step 4]─→ SRT字幕ファイル
-              └─[Step 5]─→ 字幕付き動画 (ffmpeg)
+      └─[Step 3]─→ mp3 (Suno / Playwright)  ※ Step 2: Suno ログイン（初回のみ）
+          └─[Step 4]─→ タイムコード付き JSON (OpenAI Whisper API)
+              ├─[Step 5]─→ SRT字幕ファイル
+              └─[Step 6]─→ 字幕付き動画 (ffmpeg)
                             ↑ assets/bg/ の背景動画 × video-config.json
 ```
 
@@ -59,7 +59,7 @@ setup.bat              # Windows
 ANTHROPIC_API_KEY=your_key_here
 OPENAI_API_KEY=your_key_here
 
-# 4. Suno にログイン（初回のみ）
+# 4. Suno にログイン（Step 2 / 初回のみ）
 cd suno-pipeline
 bun run src/02-save-session.ts
 ```
@@ -112,7 +112,16 @@ bun run src/01-generate-lyrics.ts --subject "関係法規・制度"
 
 科目一覧：`関係法規・制度` / `保健` / `衛生管理` / `香粧品化学` / `理容・美容技術理論` / `文化論` / `運営管理`
 
-### Step 2: Suno で音源生成
+### Step 2: Suno ログインセッション保存
+
+Suno への自動操作に必要なセッションをブラウザに保存します。初回または再ログインが必要な場合に実行します。
+
+```bash
+bun run src/02-save-session.ts
+# ブラウザが起動するので、画面に従って Suno にログイン
+```
+
+### Step 3: Suno で音源生成
 
 Playwright で Suno を自動操作し、mp3 をダウンロードします。
 
@@ -122,7 +131,7 @@ bun run src/03-suno-upload.ts --subject "関係法規・制度" --limit 1  # テ
 # 出力: downloads/{filename}.mp3
 ```
 
-### Step 3: タイムコード生成
+### Step 4: タイムコード生成
 
 OpenAI Whisper API で音声を書き起こし、歌詞の各行にタイムスタンプを付与します。
 
@@ -131,7 +140,7 @@ bun run src/04-whisper.ts
 # 更新: data/lyrics/{filename}.json (start/end フィールドを追記)
 ```
 
-### Step 4: SRT 字幕エクスポート
+### Step 5: SRT 字幕エクスポート
 
 タイムコード付き JSON から SRT 字幕ファイルを生成します。
 
@@ -141,7 +150,7 @@ bun run src/05-export-srt.ts --file 23_kan_124  # 1ファイルのみ
 # 出力: output/srt/{filename}.srt
 ```
 
-### Step 5: 字幕付き動画生成
+### Step 6: 字幕付き動画生成
 
 背景動画と音源を合成し、ASS 字幕を焼き込んだ動画を生成します。
 
@@ -204,11 +213,11 @@ BiyoKaisetsuRap/
 └── suno-pipeline/
     ├── src/
     │   ├── 01-generate-lyrics.ts   Step 1: 歌詞生成
-    │   ├── 02-save-session.ts      Suno ログインセッション保存
-    │   ├── 03-suno-upload.ts       Step 2: Suno 自動操作 → mp3 ダウンロード
-    │   ├── 04-whisper.ts           Step 3: タイムコード生成
-    │   ├── 05-export-srt.ts        Step 4: SRT 字幕エクスポート
-    │   ├── 06-make-video.ts        Step 5: 字幕付き動画生成
+    │   ├── 02-save-session.ts      Step 2: Suno ログインセッション保存
+    │   ├── 03-suno-upload.ts       Step 3: Suno 自動操作 → mp3 ダウンロード
+    │   ├── 04-whisper.ts           Step 4: タイムコード生成
+    │   ├── 05-export-srt.ts        Step 5: SRT 字幕エクスポート
+    │   ├── 06-make-video.ts        Step 6: 字幕付き動画生成
     │   └── 99-preview-video.ts     開発用: タイムコード確認動画
     ├── assets/
     │   └── bg/                     背景動画置き場（*.mp4 は gitignore）
