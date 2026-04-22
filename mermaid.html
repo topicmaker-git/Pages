@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mermaid Viewer</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --fg: #222;
+    --muted: #888;
+    --border: #e0e0e0;
+    --accent: #2563eb;
+    --error-bg: #fef2f2;
+    --error-fg: #991b1b;
+    --error-border: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --fg: #e5e5e5;
+      --muted: #888;
+      --border: #333;
+      --accent: #60a5fa;
+      --error-bg: #2a1515;
+      --error-fg: #fca5a5;
+      --error-border: #7f1d1d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    min-height: 100vh;
+  }
+  header {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .filename {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    color: var(--muted);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .controls {
+    display: flex;
+    gap: 8px;
+  }
+  button {
+    font-family: inherit;
+    font-size: 13px;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--fg);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  button:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  main {
+    padding: 12px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    min-height: calc(100vh - 60px);
+  }
+  #diagram {
+    max-width: 100%;
+    overflow: auto;
+  }
+  #diagram svg {
+    max-width: 100%;
+    height: auto;
+  }
+  #diagram {
+    width: 100%;
+    height: calc(100vh - 120px);
+    max-width: 100%;
+    overflow: hidden;
+  }
+  #diagram svg {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    cursor: grab;
+  }
+  #diagram svg:active {
+    cursor: grabbing;
+  }
+  .message {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    padding: 40px;
+  }
+  .error {
+    background: var(--error-bg);
+    color: var(--error-fg);
+    border: 1px solid var(--error-border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    white-space: pre-wrap;
+    max-width: 800px;
+  }
+  .hint {
+    max-width: 560px;
+    line-height: 1.7;
+  }
+  .hint code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="filename" id="filename">—</div>
+  <div class="controls">
+    <button id="btn-zoom-out" title="縮小">−</button>
+    <button id="btn-zoom-reset" title="リセット">⟲</button>
+    <button id="btn-zoom-in" title="拡大">+</button>
+    <button id="btn-source" title="ソース表示">Source</button>
+    <button id="btn-download" title="SVGダウンロード">SVG</button>
+  </div>
+</header>
+
+<main>
+  <div id="diagram">
+    <div class="message">Loading…</div>
+  </div>
+</main>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: isDark ? 'dark' : 'default',
+    securityLevel: 'loose',
+    fontFamily: 'inherit',
+  });
+
+  let panZoomInstance = null;
+  const diagramEl = document.getElementById('diagram');
+  const filenameEl = document.getElementById('filename');
+  const btnSource = document.getElementById('btn-source');
+  const btnDownload = document.getElementById('btn-download');
+
+  // クエリ文字列からパスを取得
+  // URL例: mermaid.html?diagram/foo.mermaid
+  // location.search は "?diagram/foo.mermaid" になるので、先頭の "?" を除く
+  const raw = window.location.search.slice(1);
+  const path = decodeURIComponent(raw);
+
+  let sourceText = '';
+  let showingSource = false;
+
+  function showError(title, detail) {
+    diagramEl.innerHTML = '';
+    const div = document.createElement('div');
+    div.className = 'error';
+    div.textContent = `${title}\n\n${detail}`;
+    diagramEl.appendChild(div);
+  }
+
+  function showHint() {
+    diagramEl.innerHTML = `
+      <div class="message hint">
+        <p>ファイルが指定されていません。</p>
+        <p>URLにパスを付けてアクセスしてください:</p>
+        <p><code>mermaid.html?diagram/foo.mermaid</code></p>
+      </div>
+    `;
+  }
+
+  async function render() {
+    if (!path) {
+      filenameEl.textContent = '—';
+      showHint();
+      return;
+    }
+
+    filenameEl.textContent = path;
+
+    try {
+      const res = await fetch(path);
+      if (!res.ok) {
+        showError(`読み込み失敗: ${res.status} ${res.statusText}`, `パス: ${path}`);
+        return;
+      }
+      sourceText = await res.text();
+
+      // Markdownフェンス(```mermaid ... ```)が含まれていたら剥がす
+      const fenceMatch = sourceText.match(/```mermaid\s*\n([\s\S]*?)\n```/);
+      const code = fenceMatch ? fenceMatch[1] : sourceText;
+
+      const { svg } = await mermaid.render('rendered-diagram', code.trim());
+      diagramEl.innerHTML = svg;
+
+      // 既存のpan-zoomインスタンスがあれば破棄
+      if (panZoomInstance) {
+        panZoomInstance.destroy();
+        panZoomInstance = null;
+      }
+
+      // SVGのwidth/height属性を明示的に100%にする（svg-pan-zoomの要件）
+      const svgEl = diagramEl.querySelector('svg');
+      if (svgEl) {
+        svgEl.setAttribute('width', '100%');
+        svgEl.setAttribute('height', '100%');
+        svgEl.style.maxWidth = 'none';
+        
+        panZoomInstance = svgPanZoom(svgEl, {
+            zoomEnabled: true,
+            controlIconsEnabled: false,
+            fit: true,
+            center: true,
+            minZoom: 0.1,
+            maxZoom: 20,
+            zoomScaleSensitivity: 0.3,
+            dblClickZoomEnabled: true,
+            mouseWheelZoomEnabled: true,
+        });
+      }
+
+    } catch (err) {
+      showError('Mermaidレンダリングエラー', err.message || String(err));
+    }
+  }
+
+  document.getElementById('btn-zoom-in').addEventListener('click', () => {
+    panZoomInstance?.zoomIn();
+  });
+  document.getElementById('btn-zoom-out').addEventListener('click', () => {
+    panZoomInstance?.zoomOut();
+  });
+  document.getElementById('btn-zoom-reset').addEventListener('click', () => {
+    panZoomInstance?.resetZoom();
+    panZoomInstance?.center();
+    panZoomInstance?.fit();
+  });
+
+  btnSource.addEventListener('click', () => {
+    if (!sourceText) return;
+    showingSource = !showingSource;
+    if (showingSource && panZoomInstance) {
+      panZoomInstance.destroy();
+      panZoomInstance = null;
+    }
+    if (showingSource) {
+      diagramEl.innerHTML = '';
+      const pre = document.createElement('pre');
+      pre.style.cssText = 'font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; line-height: 1.5; padding: 16px; border: 1px solid var(--border); border-radius: 8px; max-width: 100%; overflow: auto; white-space: pre-wrap; word-break: break-all;';
+      pre.textContent = sourceText;
+      diagramEl.appendChild(pre);
+      btnSource.textContent = 'Diagram';
+    } else {
+      btnSource.textContent = 'Source';
+      render();
+    }
+  });
+
+  btnDownload.addEventListener('click', () => {
+    const svg = diagramEl.querySelector('svg');
+    if (!svg) return;
+
+    // pan-zoomの状態を一時的にリセットしてからシリアライズ
+    const cloned = svg.cloneNode(true);
+    // svg-pan-zoomが追加したviewport groupのtransformをリセット
+    const viewport = cloned.querySelector('.svg-pan-zoom_viewport');
+    if (viewport) viewport.removeAttribute('transform');
+  
+    const serializer = new XMLSerializer();
+    const svgStr = serializer.serializeToString(cloned);
+    const blob = new Blob([svgStr], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const baseName = path.split('/').pop().replace(/\.(mermaid|mmd)$/, '');
+    a.download = `${baseName || 'diagram'}.svg`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  render();
+</script>
+
+</body>
+</html>
