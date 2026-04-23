@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SVG Viewer</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --fg: #222;
+    --muted: #888;
+    --border: #e0e0e0;
+    --accent: #2563eb;
+    --error-bg: #fef2f2;
+    --error-fg: #991b1b;
+    --error-border: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --fg: #e5e5e5;
+      --muted: #888;
+      --border: #333;
+      --accent: #60a5fa;
+      --error-bg: #2a1515;
+      --error-fg: #fca5a5;
+      --error-border: #7f1d1d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    min-height: 100vh;
+  }
+  header {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .filename {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    color: var(--muted);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .controls {
+    display: flex;
+    gap: 8px;
+  }
+  button {
+    font-family: inherit;
+    font-size: 13px;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--fg);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  button:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  main {
+    padding: 12px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    min-height: calc(100vh - 60px);
+  }
+  #viewer {
+    width: 100%;
+    height: calc(100vh - 120px);
+    max-width: 100%;
+    overflow: hidden;
+  }
+  #viewer svg {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    cursor: grab;
+  }
+  #viewer svg:active {
+    cursor: grabbing;
+  }
+  .message {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    padding: 40px;
+  }
+  .error {
+    background: var(--error-bg);
+    color: var(--error-fg);
+    border: 1px solid var(--error-border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    white-space: pre-wrap;
+    max-width: 800px;
+  }
+  .hint {
+    max-width: 560px;
+    line-height: 1.7;
+  }
+  .hint code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="filename" id="filename">—</div>
+  <div class="controls">
+    <button id="btn-zoom-out" title="縮小">−</button>
+    <button id="btn-zoom-reset" title="リセット">⟲</button>
+    <button id="btn-zoom-in" title="拡大">+</button>
+    <button id="btn-source" title="ソース表示">Source</button>
+    <button id="btn-download" title="SVGダウンロード">SVG</button>
+  </div>
+</header>
+
+<main>
+  <div id="viewer">
+    <div class="message">Loading…</div>
+  </div>
+</main>
+
+<script>
+  let panZoomInstance = null;
+  let sourceText = '';
+  let showingSource = false;
+
+  const viewerEl = document.getElementById('viewer');
+  const filenameEl = document.getElementById('filename');
+  const btnSource = document.getElementById('btn-source');
+  const btnDownload = document.getElementById('btn-download');
+
+  // URL例: svg.html?path/to/file.svg
+  const raw = window.location.search.slice(1);
+  const path = decodeURIComponent(raw);
+
+  function showError(title, detail) {
+    viewerEl.innerHTML = '';
+    const div = document.createElement('div');
+    div.className = 'error';
+    div.textContent = `${title}\n\n${detail}`;
+    viewerEl.appendChild(div);
+  }
+
+  function showHint() {
+    viewerEl.innerHTML = `
+      <div class="message hint">
+        <p>ファイルが指定されていません。</p>
+        <p>URLにパスを付けてアクセスしてください:</p>
+        <p><code>svg.html?path/to/file.svg</code></p>
+      </div>
+    `;
+  }
+
+  function initPanZoom(svgEl) {
+    if (panZoomInstance) {
+      panZoomInstance.destroy();
+      panZoomInstance = null;
+    }
+    svgEl.setAttribute('width', '100%');
+    svgEl.setAttribute('height', '100%');
+    svgEl.style.maxWidth = 'none';
+    panZoomInstance = svgPanZoom(svgEl, {
+      zoomEnabled: true,
+      controlIconsEnabled: false,
+      fit: true,
+      center: true,
+      minZoom: 0.1,
+      maxZoom: 20,
+      zoomScaleSensitivity: 0.3,
+      dblClickZoomEnabled: true,
+      mouseWheelZoomEnabled: true,
+    });
+  }
+
+  async function render() {
+    if (!path) {
+      filenameEl.textContent = '—';
+      showHint();
+      return;
+    }
+
+    filenameEl.textContent = path;
+
+    try {
+      const res = await fetch(path);
+      if (!res.ok) {
+        showError(`読み込み失敗: ${res.status} ${res.statusText}`, `パス: ${path}`);
+        return;
+      }
+      sourceText = await res.text();
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(sourceText, 'image/svg+xml');
+      const parseError = doc.querySelector('parsererror');
+      if (parseError) {
+        showError('SVGパースエラー', parseError.textContent);
+        return;
+      }
+
+      const svgEl = doc.documentElement;
+
+      // viewBox がなければ width/height から生成
+      if (!svgEl.getAttribute('viewBox')) {
+        const w = svgEl.getAttribute('width');
+        const h = svgEl.getAttribute('height');
+        if (w && h) {
+          svgEl.setAttribute('viewBox', `0 0 ${parseFloat(w)} ${parseFloat(h)}`);
+        }
+      }
+
+      viewerEl.innerHTML = '';
+      viewerEl.appendChild(document.adoptNode(svgEl));
+
+      const mounted = viewerEl.querySelector('svg');
+      if (mounted) initPanZoom(mounted);
+
+    } catch (err) {
+      showError('読み込みエラー', err.message || String(err));
+    }
+  }
+
+  document.getElementById('btn-zoom-in').addEventListener('click', () => {
+    panZoomInstance?.zoomIn();
+  });
+  document.getElementById('btn-zoom-out').addEventListener('click', () => {
+    panZoomInstance?.zoomOut();
+  });
+  document.getElementById('btn-zoom-reset').addEventListener('click', () => {
+    panZoomInstance?.resetZoom();
+    panZoomInstance?.center();
+    panZoomInstance?.fit();
+  });
+
+  btnSource.addEventListener('click', () => {
+    if (!sourceText) return;
+    showingSource = !showingSource;
+    if (showingSource && panZoomInstance) {
+      panZoomInstance.destroy();
+      panZoomInstance = null;
+    }
+    if (showingSource) {
+      viewerEl.innerHTML = '';
+      const pre = document.createElement('pre');
+      pre.style.cssText = 'font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; line-height: 1.5; padding: 16px; border: 1px solid var(--border); border-radius: 8px; max-width: 100%; overflow: auto; white-space: pre-wrap; word-break: break-all;';
+      pre.textContent = sourceText;
+      viewerEl.appendChild(pre);
+      btnSource.textContent = 'Diagram';
+    } else {
+      btnSource.textContent = 'Source';
+      render();
+    }
+  });
+
+  btnDownload.addEventListener('click', () => {
+    const svg = viewerEl.querySelector('svg');
+    if (!svg) return;
+    const cloned = svg.cloneNode(true);
+    const viewport = cloned.querySelector('.svg-pan-zoom_viewport');
+    if (viewport) viewport.removeAttribute('transform');
+    const serializer = new XMLSerializer();
+    const svgStr = serializer.serializeToString(cloned);
+    const blob = new Blob([svgStr], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const baseName = path.split('/').pop().replace(/\.svg$/i, '');
+    a.download = `${baseName || 'image'}.svg`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  render();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,296 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1123 794" font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Hiragino Sans', 'Yu Gothic', sans-serif" font-size="11">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1a1a1a"/>
+    </marker>
+    <marker id="arrow-dashed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#999"/>
+    </marker>
+    <style>
+      .title { font-size: 18px; font-weight: 700; }
+      .subtitle { font-size: 11px; fill: #666; }
+      .lane-label { font-size: 10px; fill: #666; font-family: ui-monospace, Menlo, monospace; text-transform: uppercase; letter-spacing: 0.08em; }
+      .node-id { font-size: 10px; font-family: ui-monospace, Menlo, monospace; fill: #fff; font-weight: 600; }
+      .node-name { font-size: 11px; fill: #fff; font-weight: 600; }
+      .node-btn { font-size: 9.5px; fill: #1a1a1a; }
+      .node-tab { font-size: 9px; fill: #666; font-style: italic; }
+      .edge-label { font-size: 9px; fill: #1a1a1a; font-family: ui-monospace, Menlo, monospace; }
+      .edge-label-bg { fill: #fff; }
+      .sidebar-label { font-size: 9px; fill: #999; font-style: italic; }
+      .legend-text { font-size: 10px; fill: #333; }
+      .note-text { font-size: 9px; fill: #666; }
+    </style>
+  </defs>
+
+  <rect width="1123" height="794" fill="#fafaf8"/>
+
+  <text x="24" y="32" class="title">A画面群 画面遷移図 — 団体管理者 (b) 個人コンテンツ系</text>
+  <text x="24" y="50" class="subtitle">管理者自身の マイコース / マイユニット。団体管理画面は図3a を参照(共通帯の構造は無所属・一般会員と同一)</text>
+
+  <!-- Lane background -->
+  <rect x="16" y="70" width="1091" height="620" fill="#ede5e5" stroke="#d0c4c4" stroke-width="0.5"/>
+  <text x="28" y="86" class="lane-label">団体管理者レーン — 個人コンテンツ系</text>
+
+  <!-- Sidebar -->
+  <g>
+    <rect x="40" y="110" width="130" height="180" fill="#fff" stroke="#999" stroke-width="1" stroke-dasharray="4 3" rx="4"/>
+    <text x="105" y="128" text-anchor="middle" class="sidebar-label">左ペイン</text>
+    <text x="105" y="144" text-anchor="middle" font-size="10" fill="#666" font-family="ui-monospace,Menlo,monospace">管理コンソール</text>
+    <line x1="55" y1="156" x2="155" y2="156" stroke="#ccc" stroke-width="0.5"/>
+    <text x="60" y="172" font-size="8.5" fill="#888" font-style="italic">マイコンテンツ:</text>
+    <text x="60" y="186" font-size="9.5" fill="#333">▪ マイコース</text>
+    <text x="60" y="200" font-size="9.5" fill="#333">▪ マイユニット</text>
+    <line x1="55" y1="210" x2="155" y2="210" stroke="#ccc" stroke-width="0.5"/>
+    <text x="60" y="226" font-size="8.5" fill="#888" font-style="italic">団体管理:</text>
+    <text x="60" y="240" font-size="9.5" fill="#ccc">▪ ... →図3a</text>
+    <text x="60" y="266" font-size="9" fill="#999" font-style="italic">(常時表示 / 全画面)</text>
+    <text x="60" y="280" font-size="9" fill="#999" font-style="italic">から A-MC1 / A-MU1</text>
+  </g>
+
+  <!-- A-P1 (admin) -->
+  <g>
+    <rect x="220" y="110" width="200" height="110" fill="#fff" stroke="#1a1a1a" stroke-width="1.5" rx="2"/>
+    <rect x="220" y="110" width="200" height="28" fill="#4a4a4a"/>
+    <text x="232" y="128" class="node-id">A-P1</text>
+    <text x="265" y="128" class="node-name">暫定プロフィール(管理者)</text>
+    <line x1="220" y1="138" x2="420" y2="138" stroke="#d8d3c4" stroke-width="0.5"/>
+    <text x="232" y="156" class="node-btn">→ 団体情報を開く (図3a)</text>
+    <text x="232" y="172" class="node-btn">→ マイコース</text>
+    <text x="232" y="188" class="node-btn">→ マイユニット</text>
+    <text x="232" y="210" class="node-tab">開始点 / 共通アクセスハブ</text>
+  </g>
+
+  <!-- Note -->
+  <g>
+    <rect x="450" y="110" width="450" height="110" fill="#fff9e8" stroke="#d8c98a" stroke-width="1" rx="2"/>
+    <text x="466" y="132" font-size="11" font-weight="600" fill="#7a6a1a">管理者の個人コンテンツについて</text>
+    <text x="466" y="152" font-size="10" fill="#5a4a1a">▪ 管理者も一会員として自分のコース・ユニットを作成・投稿できる。</text>
+    <text x="466" y="168" font-size="10" fill="#5a4a1a">▪ この図で扱うのは「自分が主催/投稿した」コンテンツの管理画面のみ。</text>
+    <text x="466" y="184" font-size="10" fill="#5a4a1a">▪ 他メンバーのコース/ユニットへの介入編集は図3a の A-C2 / A-U2。</text>
+    <text x="466" y="200" font-size="10" fill="#5a4a1a">▪ 共通帯の構造は無所属会員・一般会員の図と同一(ロール識別のみ相違)。</text>
+  </g>
+
+  <!-- Common band -->
+  <g>
+    <rect x="40" y="320" width="1050" height="360" fill="#e8e6dc" stroke="#c4bfb0" stroke-width="0.5"/>
+    <text x="52" y="338" class="lane-label">共通帯(全ロール共通) — マイコース / マイユニット / コースメンバー</text>
+  </g>
+
+  <!-- A-MC1 -->
+  <g>
+    <rect x="60" y="370" width="170" height="100" fill="#fff" stroke="#1a1a1a" stroke-width="1.5" rx="2"/>
+    <rect x="60" y="370" width="170" height="28" fill="#2a5a7a"/>
+    <text x="72" y="388" class="node-id">A-MC1</text>
+    <text x="108" y="388" class="node-name">マイコース 一覧</text>
+    <line x1="60" y1="398" x2="230" y2="398" stroke="#d8d3c4" stroke-width="0.5"/>
+    <text x="72" y="416" class="node-btn">→ ＋ 新規作成</text>
+    <text x="72" y="432" class="node-btn">→ 詳細 / 行クリック</text>
+    <text x="72" y="448" class="node-btn">削除 / ▲▼</text>
+  </g>
+
+  <!-- A-MC3 -->
+  <g>
+    <rect x="290" y="370" width="170" height="100" fill="#fff" stroke="#1a1a1a" stroke-width="1.5" rx="2"/>
+    <rect x="290" y="370" width="170" height="28" fill="#2a5a7a"/>
+    <text x="302" y="388" class="node-id">A-MC3</text>
+    <text x="338" y="388" class="node-name">マイコース 新規作成</text>
+    <line x1="290" y1="398" x2="460" y2="398" stroke="#d8d3c4" stroke-width="0.5"/>
+    <text x="302" y="416" class="node-btn">→ 作成して A-MC2 へ</text>
+    <text x="302" y="432" class="node-btn">キャンセル</text>
+  </g>
+
+  <!-- A-MC2 -->
+  <g>
+    <rect x="520" y="370" width="190" height="135" fill="#fff" stroke="#1a1a1a" stroke-width="1.5" rx="2"/>
+    <rect x="520" y="370" width="190" height="28" fill="#2a5a7a"/>
+    <text x="532" y="388" class="node-id">A-MC2</text>
+    <text x="568" y="388" class="node-name">マイコース 詳細/編集</text>
+    <line x1="520" y1="398" x2="710" y2="398" stroke="#d8d3c4" stroke-width="0.5"/>
+    <text x="532" y="416" class="node-btn">← マイコース一覧</text>
+    <text x="532" y="432" class="node-btn">変更を保存 / コース削除</text>
+    <line x1="525" y1="442" x2="705" y2="442" stroke="#d8d3c4" stroke-width="0.3" stroke-dasharray="2 2"/>
+    <text x="532" y="458" class="node-tab">タブ: 基本情報 / メンバー(A-CM1)</text>
+    <text x="532" y="472" class="node-btn">メンバータブ: → ＋ 招待</text>
+    <line x1="525" y1="482" x2="705" y2="482" stroke="#d8d3c4" stroke-width="0.3" stroke-dasharray="2 2"/>
+    <text x="532" y="498" class="node-btn">ユニット (N / 最大 M): → 一覧</text>
+  </g>
+
+  <!-- A-CM2 -->
+  <g>
+    <rect x="770" y="370" width="170" height="100" fill="#fff" stroke="#1a1a1a" stroke-width="1.5" rx="2"/>
+    <rect x="770" y="370" width="170" height="28" fill="#5a4a8a"/>
+    <text x="782" y="388" class="node-id">A-CM2</text>
+    <text x="818" y="388" class="node-name">コースメンバー 招待</text>
+    <line x1="770" y1="398" x2="940" y2="398" stroke="#d8d3c4" stroke-width="0.5"/>
+    <text x="782" y="416" class="node-btn">→ 招待を送信</text>
+    <text x="782" y="432" class="node-btn">キャンセル</text>
+    <text x="782" y="456" class="node-tab">戻り先: A-MC2 の</text>
+    <text x="782" y="468" class="node-tab">メンバータブ (図3aからも)</text>
+  </g>
+
+  <!-- A-MU1 -->
+  <g>
+    <rect x="60" y="540" width="170" height="100" fill="#fff" stroke="#1a1a1a" stroke-width="1.5" rx="2"/>
+    <rect x="60" y="540" width="170" height="28" fill="#2a7a5a"/>
+    <text x="72" y="558" class="node-id">A-MU1</text>
+    <text x="112" y="558" class="node-name">マイユニット 一覧</text>
+    <line x1="60" y1="568" x2="230" y2="568" stroke="#d8d3c4" stroke-width="0.5"/>
+    <text x="72" y="586" class="node-btn">→ ＋ 新規投稿</text>
+    <text x="72" y="602" class="node-btn">→ 詳細 / 行クリック</text>
+    <text x="72" y="618" class="node-btn">削除 / ⭳ / ▲▼</text>
+  </g>
+
+  <!-- A-MU3 -->
+  <g>
+    <rect x="290" y="540" width="170" height="100" fill="#fff" stroke="#1a1a1a" stroke-width="1.5" rx="2"/>
+    <rect x="290" y="540" width="170" height="28" fill="#2a7a5a"/>
+    <text x="302" y="558" class="node-id">A-MU3</text>
+    <text x="342" y="558" class="node-name">マイユニット 新規投稿</text>
+    <line x1="290" y1="568" x2="460" y2="568" stroke="#d8d3c4" stroke-width="0.5"/>
+    <text x="302" y="586" class="node-btn">→ 投稿する → A-MU2</text>
+    <text x="302" y="602" class="node-btn">投稿内容をプレビュー</text>
+    <text x="302" y="618" class="node-btn">キャンセル</text>
+  </g>
+
+  <!-- A-MU2 -->
+  <g>
+    <rect x="520" y="540" width="190" height="110" fill="#fff" stroke="#1a1a1a" stroke-width="1.5" rx="2"/>
+    <rect x="520" y="540" width="190" height="28" fill="#2a7a5a"/>
+    <text x="532" y="558" class="node-id">A-MU2</text>
+    <text x="572" y="558" class="node-name">マイユニット 詳細/編集</text>
+    <line x1="520" y1="568" x2="710" y2="568" stroke="#d8d3c4" stroke-width="0.5"/>
+    <text x="532" y="586" class="node-btn">← マイユニット一覧</text>
+    <text x="532" y="602" class="node-btn">変更を保存 / ユニット削除</text>
+    <text x="532" y="618" class="node-btn">プレビュー(学習者視点)</text>
+  </g>
+
+  <!-- === Edges === -->
+
+  <!-- E8: A-P1 → A-MC1 -->
+  <g>
+    <path d="M 270 220 L 270 300 L 145 300 L 145 368" stroke="#1a1a1a" stroke-width="1.2" fill="none" marker-end="url(#arrow)"/>
+    <rect x="222" y="293" width="82" height="12" class="edge-label-bg"/>
+    <text x="263" y="303" text-anchor="middle" class="edge-label">マイコースリンク</text>
+  </g>
+
+  <!-- E9: A-P1 → A-MU1 -->
+  <g>
+    <path d="M 370 220 L 370 316 L 145 316 L 145 538" stroke="#1a1a1a" stroke-width="1.2" fill="none" marker-end="url(#arrow)"/>
+    <rect x="255" y="309" width="94" height="12" class="edge-label-bg"/>
+    <text x="302" y="319" text-anchor="middle" class="edge-label">マイユニットリンク</text>
+  </g>
+
+  <!-- Sidebar → A-MC1 (dashed) -->
+  <g>
+    <path d="M 170 186 L 195 186 L 195 408 L 58 408" stroke="#999" stroke-width="1" stroke-dasharray="4 3" fill="none" marker-end="url(#arrow-dashed)"/>
+  </g>
+
+  <!-- Sidebar → A-MU1 (dashed) -->
+  <g>
+    <path d="M 170 200 L 205 200 L 205 580 L 58 580" stroke="#999" stroke-width="1" stroke-dasharray="4 3" fill="none" marker-end="url(#arrow-dashed)"/>
+  </g>
+
+  <!-- E22: A-MC1 → A-MC3 -->
+  <g>
+    <line x1="230" y1="400" x2="288" y2="400" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
+    <rect x="236" y="386" width="45" height="12" class="edge-label-bg"/>
+    <text x="258" y="396" text-anchor="middle" class="edge-label">＋ 新規</text>
+  </g>
+
+  <!-- E23: A-MC1 → A-MC2 -->
+  <g>
+    <path d="M 230 440 L 270 440 L 270 490 L 610 490 L 615 490" stroke="#1a1a1a" stroke-width="1.2" fill="none" marker-end="url(#arrow)"/>
+    <rect x="400" y="483" width="70" height="12" class="edge-label-bg"/>
+    <text x="435" y="493" text-anchor="middle" class="edge-label">行クリック</text>
+  </g>
+
+  <!-- E24: A-MC3 → A-MC2 -->
+  <g>
+    <line x1="460" y1="420" x2="518" y2="420" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
+    <rect x="464" y="406" width="55" height="12" class="edge-label-bg"/>
+    <text x="492" y="416" text-anchor="middle" class="edge-label">作成成功</text>
+  </g>
+
+  <!-- E25: A-MC2 → A-MC1 -->
+  <g>
+    <path d="M 615 400 L 265 400 L 265 370" stroke="#1a1a1a" stroke-width="1.2" stroke-dasharray="6 3" fill="none" marker-end="url(#arrow)"/>
+    <rect x="385" y="354" width="70" height="12" class="edge-label-bg"/>
+    <text x="420" y="364" text-anchor="middle" class="edge-label">← 戻る/削除</text>
+  </g>
+
+  <!-- E26: A-MC2 → A-CM2 -->
+  <g>
+    <line x1="710" y1="460" x2="768" y2="460" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
+    <rect x="710" y="446" width="58" height="12" class="edge-label-bg"/>
+    <text x="739" y="456" text-anchor="middle" class="edge-label">＋ 招待</text>
+  </g>
+
+  <!-- E31: A-CM2 → A-MC2 -->
+  <g>
+    <path d="M 855 470 L 855 510 L 615 510 L 615 490" stroke="#1a1a1a" stroke-width="1.2" stroke-dasharray="6 3" fill="none" marker-end="url(#arrow)"/>
+    <rect x="700" y="503" width="70" height="12" class="edge-label-bg"/>
+    <text x="735" y="513" text-anchor="middle" class="edge-label">送信/キャンセル</text>
+  </g>
+
+  <!-- E27: A-MU1 → A-MU3 -->
+  <g>
+    <line x1="230" y1="570" x2="288" y2="570" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
+    <rect x="234" y="556" width="50" height="12" class="edge-label-bg"/>
+    <text x="259" y="566" text-anchor="middle" class="edge-label">＋ 投稿</text>
+  </g>
+
+  <!-- E28: A-MU1 → A-MU2 -->
+  <g>
+    <path d="M 230 620 L 270 620 L 270 660 L 615 660 L 615 650" stroke="#1a1a1a" stroke-width="1.2" fill="none" marker-end="url(#arrow)"/>
+    <rect x="400" y="653" width="70" height="12" class="edge-label-bg"/>
+    <text x="435" y="663" text-anchor="middle" class="edge-label">行クリック</text>
+  </g>
+
+  <!-- E29: A-MU3 → A-MU2 -->
+  <g>
+    <line x1="460" y1="590" x2="518" y2="590" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
+    <rect x="464" y="576" width="55" height="12" class="edge-label-bg"/>
+    <text x="492" y="586" text-anchor="middle" class="edge-label">投稿成功</text>
+  </g>
+
+  <!-- E30: A-MU2 → A-MU1 -->
+  <g>
+    <path d="M 615 570 L 265 570 L 265 540" stroke="#1a1a1a" stroke-width="1.2" stroke-dasharray="6 3" fill="none" marker-end="url(#arrow)"/>
+    <rect x="385" y="524" width="70" height="12" class="edge-label-bg"/>
+    <text x="420" y="534" text-anchor="middle" class="edge-label">← 戻る/削除</text>
+  </g>
+
+  <!-- E33: A-MC2 → A-MU1 (コース詳細から帰属ユニット一覧へ) -->
+  <g>
+    <path d="M 565 505 L 565 525 L 175 525 L 175 538" stroke="#1a1a1a" stroke-width="1.2" fill="none" marker-end="url(#arrow)"/>
+    <rect x="340" y="518" width="110" height="12" class="edge-label-bg"/>
+    <text x="395" y="528" text-anchor="middle" class="edge-label">→ マイユニット一覧</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(960, 370)">
+    <rect x="0" y="0" width="140" height="170" fill="#fff" stroke="#ccc" stroke-width="0.5" rx="2"/>
+    <text x="10" y="16" font-size="10" font-weight="600" fill="#333">凡例</text>
+    <line x1="10" y1="30" x2="40" y2="30" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
+    <text x="46" y="33" class="legend-text">ボタン遷移</text>
+    <line x1="10" y1="48" x2="40" y2="48" stroke="#1a1a1a" stroke-width="1.2" stroke-dasharray="6 3" marker-end="url(#arrow)"/>
+    <text x="46" y="51" class="legend-text">戻り/キャンセル</text>
+    <line x1="10" y1="66" x2="40" y2="66" stroke="#999" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arrow-dashed)"/>
+    <text x="46" y="69" class="legend-text">左ペイン遷移</text>
+    <rect x="10" y="80" width="20" height="12" fill="#4a4a4a"/>
+    <text x="36" y="89" class="legend-text">アクセスハブ</text>
+    <rect x="10" y="98" width="20" height="12" fill="#2a5a7a"/>
+    <text x="36" y="107" class="legend-text">コース系</text>
+    <rect x="10" y="116" width="20" height="12" fill="#2a7a5a"/>
+    <text x="36" y="125" class="legend-text">ユニット系</text>
+    <rect x="10" y="134" width="20" height="12" fill="#5a4a8a"/>
+    <text x="36" y="143" class="legend-text">メンバー系</text>
+    <text x="10" y="162" font-size="8" fill="#888" font-style="italic">ノード内「→」は遷移ボタン</text>
+  </g>
+
+  <text x="24" y="710" class="note-text">※ 団体管理者における共通帯の挙動は、無所属会員・一般会員と同一。(団体コース/団体ユニットの管理は図3a)</text>
+  <text x="24" y="724" class="note-text">※ A-CM2 は図3a(団体管理者の団体コース A-C2 のメンバータブからの遷移 E19/E32)からも到達する。戻り先が遷移元によって変わる。</text>
+  <text x="24" y="738" class="note-text">※ A-CM1(コースメンバー一覧)は A-MC2 内のタブ。独立した画面ではない。</text>
+  <text x="24" y="752" class="note-text">※ 左ペイン遷移(薄いグレー破線)は全画面から A-MC1 / A-MU1 へ常時アクセス可能であることを示す。</text>
+  <text x="24" y="766" class="note-text">遷移エッジ: E8, E9, E22〜E31, E33(A-MC2→A-MU1 コース詳細のユニット数サマリから) / ただし E32 は図3aにて扱う</text>
+</svg>
