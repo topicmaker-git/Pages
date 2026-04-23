@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markdown Viewer</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --fg: #222;
+    --muted: #888;
+    --border: #e0e0e0;
+    --accent: #2563eb;
+    --code-bg: #f4f4f4;
+    --table-header-bg: #f0f0f0;
+    --error-bg: #fef2f2;
+    --error-fg: #991b1b;
+    --error-border: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --fg: #e5e5e5;
+      --muted: #888;
+      --border: #333;
+      --accent: #60a5fa;
+      --code-bg: #242424;
+      --table-header-bg: #2a2a2a;
+      --error-bg: #2a1515;
+      --error-fg: #fca5a5;
+      --error-border: #7f1d1d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+  header {
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .filename {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    color: var(--muted);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  button {
+    font-family: inherit;
+    font-size: 13px;
+    padding: 5px 11px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--fg);
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  button:hover { border-color: var(--accent); color: var(--accent); }
+
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+
+  /* ── Markdown body ── */
+  .markdown-body h1 {
+    font-size: 1.9em;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.3em;
+    margin: 0.5em 0 0.6em;
+  }
+  .markdown-body h2 {
+    font-size: 1.45em;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.25em;
+    margin: 1.8em 0 0.5em;
+  }
+  .markdown-body h3 { font-size: 1.2em; margin: 1.5em 0 0.4em; }
+  .markdown-body h4 { font-size: 1em; margin: 1.4em 0 0.4em; }
+  .markdown-body p { margin: 0.7em 0; }
+  .markdown-body ul, .markdown-body ol { padding-left: 1.8em; margin: 0.6em 0; }
+  .markdown-body li { margin: 0.25em 0; }
+  .markdown-body li > ul, .markdown-body li > ol { margin: 0.15em 0; }
+  .markdown-body blockquote {
+    border-left: 4px solid var(--border);
+    padding: 0.1em 1em;
+    color: var(--muted);
+    margin: 0.8em 0;
+  }
+  .markdown-body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.88em;
+    background: var(--code-bg);
+    padding: 2px 5px;
+    border-radius: 4px;
+  }
+  .markdown-body pre {
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1em 0;
+  }
+  .markdown-body pre code { background: none; padding: 0; font-size: 0.85em; }
+  .markdown-body table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+    font-size: 0.93em;
+  }
+  .markdown-body th, .markdown-body td {
+    border: 1px solid var(--border);
+    padding: 7px 12px;
+    text-align: left;
+  }
+  .markdown-body th { background: var(--table-header-bg); font-weight: 600; }
+  .markdown-body tr:nth-child(even) td { background: color-mix(in srgb, var(--code-bg) 40%, transparent); }
+  .markdown-body hr { border: none; border-top: 1px solid var(--border); margin: 1.5em 0; }
+  .markdown-body a { color: var(--accent); }
+  .markdown-body strong { font-weight: 700; }
+
+  /* ── Mermaid diagram block ── */
+  .mermaid-wrap {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1.2em 0;
+  }
+  .diagram-toolbar {
+    display: flex;
+    gap: 6px;
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    background: var(--code-bg);
+    align-items: center;
+  }
+  .diagram-toolbar button { padding: 3px 9px; font-size: 12px; }
+  .diagram-area {
+    height: 560px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .diagram-area svg { width: 100%; height: 100%; cursor: grab; }
+  .diagram-area svg:active { cursor: grabbing; }
+  .diagram-source {
+    display: none;
+    margin: 0;
+    padding: 14px 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-all;
+    background: var(--code-bg);
+    overflow-y: auto;
+    max-height: 560px;
+    color: var(--fg);
+  }
+
+  /* ── misc ── */
+  .error-block {
+    background: var(--error-bg);
+    color: var(--error-fg);
+    border: 1px solid var(--error-border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    white-space: pre-wrap;
+  }
+  .message {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    padding: 40px;
+    line-height: 1.8;
+  }
+  .message code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .source-view {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-all;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--code-bg);
+    color: var(--fg);
+  }
+  @media (max-width: 640px) {
+    main { padding: 16px 12px 48px; }
+    .diagram-area { height: 380px; }
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/marked@4/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="filename" id="filename">—</div>
+  <button id="btn-global-source">Source</button>
+</header>
+
+<main>
+  <article id="content" class="markdown-body">
+    <div class="message">Loading…</div>
+  </article>
+</main>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: isDark ? 'dark' : 'default',
+    securityLevel: 'loose',
+    fontFamily: 'inherit',
+  });
+
+  const path = decodeURIComponent(window.location.search.slice(1));
+  const filenameEl  = document.getElementById('filename');
+  const contentEl   = document.getElementById('content');
+  const btnGlobal   = document.getElementById('btn-global-source');
+
+  if (path) {
+    filenameEl.textContent = path;
+    document.title = path.split('/').pop() + ' — Markdown Viewer';
+  }
+
+  let rawSource = '';
+  let showingSource = false;
+  let renderSeq = 0;
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── marked renderer ──────────────────────────────────────────────
+  const mermaidBlocks = [];
+
+  const renderer = new marked.Renderer();
+
+  renderer.code = function(code, infostring) {
+    const lang = (infostring || '').split(/\s+/)[0].toLowerCase();
+    if (lang === 'mermaid') {
+      const idx = mermaidBlocks.length;
+      mermaidBlocks.push(code);
+      return `
+<div class="mermaid-wrap" data-idx="${idx}">
+  <div class="diagram-toolbar">
+    <button class="btn-zoom-out" title="縮小">−</button>
+    <button class="btn-zoom-reset" title="リセット">⟲</button>
+    <button class="btn-zoom-in" title="拡大">+</button>
+    <button class="btn-src-toggle">Source</button>
+    <button class="btn-download">SVG</button>
+  </div>
+  <div class="diagram-area" id="mermaid-area-${idx}"></div>
+  <pre class="diagram-source">${escHtml(code)}</pre>
+</div>`;
+    }
+    const langAttr = lang ? ` class="language-${escHtml(lang)}"` : '';
+    return `<pre><code${langAttr}>${escHtml(code)}</code></pre>`;
+  };
+
+  marked.setOptions({ renderer, gfm: true, breaks: false });
+
+  // ── render ────────────────────────────────────────────────────────
+  const panZoom = {};
+
+  async function renderContent() {
+    if (!path) {
+      contentEl.innerHTML = `<div class="message">
+        <p>ファイルが指定されていません。</p>
+        <p><code>markdown.html?choi/foo.md</code> の形式でアクセスしてください。</p>
+      </div>`;
+      return;
+    }
+
+    contentEl.innerHTML = '<div class="message">Loading…</div>';
+
+    let text;
+    try {
+      const res = await fetch(path);
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      text = await res.text();
+    } catch (err) {
+      contentEl.innerHTML = `<div class="error-block">読み込み失敗: ${escHtml(err.message)}</div>`;
+      return;
+    }
+
+    rawSource = text;
+
+    // Reset per-render state
+    const seq = ++renderSeq;
+    mermaidBlocks.length = 0;
+    Object.values(panZoom).forEach(pz => { try { pz.destroy(); } catch {} });
+    Object.keys(panZoom).forEach(k => delete panZoom[k]);
+
+    contentEl.innerHTML = marked.parse(rawSource);
+
+    // Render each mermaid diagram
+    const wraps = contentEl.querySelectorAll('.mermaid-wrap');
+    for (const wrap of wraps) {
+      if (renderSeq !== seq) return; // superseded by a newer render call
+
+      const idx = parseInt(wrap.dataset.idx, 10);
+      const code = mermaidBlocks[idx];
+      const area = document.getElementById(`mermaid-area-${idx}`);
+      const svgId = `mermaid-render-${seq}-${idx}`;
+
+      try {
+        const { svg } = await mermaid.render(svgId, code.trim());
+        area.innerHTML = svg;
+
+        const svgEl = area.querySelector('svg');
+        if (svgEl) {
+          svgEl.setAttribute('width', '100%');
+          svgEl.setAttribute('height', '100%');
+          svgEl.style.maxWidth = 'none';
+          panZoom[idx] = svgPanZoom(svgEl, {
+            zoomEnabled: true,
+            controlIconsEnabled: false,
+            fit: true,
+            center: true,
+            minZoom: 0.1,
+            maxZoom: 20,
+            zoomScaleSensitivity: 0.3,
+          });
+        }
+      } catch (err) {
+        area.innerHTML = `<div class="error-block">${escHtml(err.message || String(err))}</div>`;
+      }
+
+      // Toolbar
+      wrap.querySelector('.btn-zoom-in').addEventListener('click', () => panZoom[idx]?.zoomIn());
+      wrap.querySelector('.btn-zoom-out').addEventListener('click', () => panZoom[idx]?.zoomOut());
+      wrap.querySelector('.btn-zoom-reset').addEventListener('click', () => {
+        panZoom[idx]?.resetZoom();
+        panZoom[idx]?.center();
+        panZoom[idx]?.fit();
+      });
+
+      const srcPre = wrap.querySelector('.diagram-source');
+      const btnSrc = wrap.querySelector('.btn-src-toggle');
+      let srcVisible = false;
+      btnSrc.addEventListener('click', () => {
+        srcVisible = !srcVisible;
+        srcPre.style.display = srcVisible ? 'block' : 'none';
+        area.style.display   = srcVisible ? 'none'  : 'block';
+        btnSrc.textContent   = srcVisible ? 'Diagram' : 'Source';
+      });
+
+      wrap.querySelector('.btn-download').addEventListener('click', () => {
+        const svg = area.querySelector('svg');
+        if (!svg) return;
+        const cloned = svg.cloneNode(true);
+        cloned.querySelector('.svg-pan-zoom_viewport')?.removeAttribute('transform');
+        const blob = new Blob([new XMLSerializer().serializeToString(cloned)], { type: 'image/svg+xml' });
+        const url  = URL.createObjectURL(blob);
+        const a    = Object.assign(document.createElement('a'), {
+          href: url,
+          download: `${path.split('/').pop().replace(/\.md$/i, '')}-diagram-${idx + 1}.svg`,
+        });
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+  }
+
+  // Global source toggle
+  btnGlobal.addEventListener('click', () => {
+    if (!rawSource) return;
+    showingSource = !showingSource;
+    if (showingSource) {
+      Object.values(panZoom).forEach(pz => { try { pz.destroy(); } catch {} });
+      contentEl.innerHTML = `<pre class="source-view">${escHtml(rawSource)}</pre>`;
+      btnGlobal.textContent = 'Rendered';
+    } else {
+      btnGlobal.textContent = 'Source';
+      renderContent();
+    }
+  });
+
+  renderContent();
+</script>
+</body>
+</html>
