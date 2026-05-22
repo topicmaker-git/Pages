@@ -1,0 +1,73 @@
+flowchart TB
+
+classDef actor fill:#e3f2fd,stroke:#01579b,stroke-width:2px,color:#000
+classDef abstract fill:#f5f5f5,stroke:#666,stroke-width:1px,stroke-dasharray:4 4,color:#333
+classDef uc fill:#fff9c4,stroke:#827717,stroke-width:1px,color:#000
+classDef ucShared fill:#e0e0e0,stroke:#424242,stroke-width:1px,color:#000
+
+subgraph A_Guest["未認証アクター"]
+    Guest["ゲスト"]:::actor
+end
+
+subgraph A_Member["認証済みアクター（軸1 団体所属）"]
+    direction TB
+    Member["《抽象》会員"]:::abstract
+    NonAff["無所属会員"]:::actor
+    GenMem["団体一般会員"]:::actor
+    AdmMem["団体管理者"]:::actor
+    Member --> NonAff
+    Member --> GenMem
+    Member --> AdmMem
+end
+
+Guest -.->|"登録／ログイン成功で<br/>いずれかへ遷移"| Member
+
+subgraph UC_Reg["新規登録"]
+    direction TB
+    UC_RegMail(["新規登録<br/>メール+パスワード"])
+    UC_RegOAuth(["新規登録<br/>OAuth + メール入力"])
+end
+
+subgraph UC_Login["ログイン"]
+    direction TB
+    UC_LoginPwd(["ログイン<br/>パスワード"])
+    UC_LoginOAuth(["ログイン<br/>OAuth"])
+    UC_PwdReset(["パスワードリセット"])
+end
+
+subgraph UC_Acc["アカウント維持"]
+    direction TB
+    UC_Logout(["ログアウト"])
+    UC_Profile(["プロフィール編集"])
+    UC_MailChg(["メール変更"])
+    UC_PwdChg(["パスワード変更"])
+end
+
+subgraph UC_Invite["招待受諾"]
+    direction TB
+    UC_OrgAccept(["団体招待を承諾する<br/>UC-50／UC-51"])
+    UC_CrsAccept(["コース招待を承諾する<br/>UC-15 拡張"])
+end
+
+UC_OTP(["《共通》<br/>メールアドレス所有確認 OTP"]):::ucShared
+
+Guest --- UC_RegMail
+Guest --- UC_RegOAuth
+Guest --- UC_LoginPwd
+Guest --- UC_LoginOAuth
+Guest --- UC_PwdReset
+Guest --- UC_OrgAccept
+Guest --- UC_CrsAccept
+
+Member --- UC_Logout
+Member --- UC_Profile
+Member --- UC_MailChg
+Member --- UC_PwdChg
+Member --- UC_OrgAccept
+Member --- UC_CrsAccept
+
+UC_RegMail -. "&lt;&lt;include&gt;&gt;" .-> UC_OTP
+UC_RegOAuth -. "&lt;&lt;include&gt;&gt;" .-> UC_OTP
+UC_MailChg -. "&lt;&lt;include&gt;&gt;" .-> UC_OTP
+
+class UC_RegMail,UC_RegOAuth,UC_LoginPwd,UC_LoginOAuth,UC_PwdReset,UC_Logout,UC_Profile,UC_MailChg,UC_PwdChg,UC_OrgAccept,UC_CrsAccept uc

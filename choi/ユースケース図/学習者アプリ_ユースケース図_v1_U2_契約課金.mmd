@@ -1,0 +1,52 @@
+flowchart TB
+
+classDef actor fill:#e3f2fd,stroke:#01579b,stroke-width:2px,color:#000
+classDef uc fill:#fff9c4,stroke:#827717,stroke-width:1px,color:#000
+classDef ucPassive fill:#ffe0b2,stroke:#bf360c,stroke-width:1px,color:#000
+
+subgraph A_Actors["アクター 契約状態 軸2"]
+    direction TB
+    Free["無料会員"]:::actor
+    Trial["トライアル会員"]:::actor
+    Paid["有料会員"]:::actor
+    Cancelling["解約手続済会員"]:::actor
+end
+
+subgraph UC_Start["契約開始"]
+    direction TB
+    UCContract(["プランを契約する<br/>初回はトライアル7日<br/>2回目以降は即課金"])
+end
+
+subgraph UC_Maintain["契約維持"]
+    direction TB
+    UCCard(["カード情報を変更する"])
+end
+
+subgraph UC_End["契約終了・取消"]
+    direction TB
+    UCTrialCancel(["トライアル期間中に<br/>キャンセルする"])
+    UCCancel(["解約を申し込む<br/>予約解約"])
+    UCCancelRevoke(["解約予約を<br/>キャンセルする"])
+end
+
+UCAutoPaid(["《システム自動》<br/>トライアル満了で<br/>有料へ自動移行<br/>課金スタート"]):::ucPassive
+UCAutoFree(["《システム自動》<br/>解約満了で<br/>無料へ自動移行"]):::ucPassive
+UCAutoStop(["《システム自動》<br/>支払い滞納で<br/>サービス停止<br/>無料へ移行"]):::ucPassive
+UCNotify(["《システム発火》<br/>契約関連メール通知<br/>12種類を受領する"]):::ucPassive
+
+Free --- UCContract
+Trial --- UCCard
+Paid --- UCCard
+Cancelling --- UCCard
+Trial --- UCTrialCancel
+Paid --- UCCancel
+Cancelling --- UCCancelRevoke
+Trial --- UCNotify
+Paid --- UCNotify
+Cancelling --- UCNotify
+
+UCContract -. "&lt;&lt;extend&gt;&gt;<br/>トライアル満了" .-> UCAutoPaid
+UCCancel -. "&lt;&lt;extend&gt;&gt;<br/>満了時" .-> UCAutoFree
+UCCard -. "&lt;&lt;extend&gt;&gt;<br/>滞納継続時" .-> UCAutoStop
+
+class UCContract,UCCard,UCTrialCancel,UCCancel,UCCancelRevoke uc

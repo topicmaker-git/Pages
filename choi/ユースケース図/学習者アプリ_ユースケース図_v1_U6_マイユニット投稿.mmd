@@ -1,0 +1,45 @@
+flowchart TB
+
+classDef actor fill:#e3f2fd,stroke:#01579b,stroke-width:2px,color:#000
+classDef abstract fill:#f5f5f5,stroke:#666,stroke-width:1px,stroke-dasharray:4 4,color:#333
+classDef uc fill:#fff9c4,stroke:#827717,stroke-width:1px,color:#000
+
+subgraph A_Actors["アクター"]
+    direction TB
+    Member["《抽象》会員<br/>無所属／一般／管理者"]:::abstract
+    Poster["投稿者<br/>関与 軸3"]:::actor
+    Member --> Poster
+end
+
+subgraph UC_Post["投稿"]
+    direction TB
+    UC20(["UC-20<br/>ユニットを新規作成・投稿する"])
+end
+
+subgraph UC_Edit["編集"]
+    direction TB
+    UC21(["UC-21<br/>ユニット情報を編集する"])
+    UC22(["UC-22<br/>投稿データを更新する<br/>差分処理"])
+    UC23(["UC-23<br/>投稿データを<br/>ダウンロードする"])
+end
+
+subgraph UC_Course["コース帰属"]
+    direction TB
+    UC24(["UC-24<br/>ユニットをコースに紐づける"])
+end
+
+subgraph UC_Org["整理・削除"]
+    direction TB
+    UC25(["UC-25<br/>ユニットの表示順を変更する"])
+    UC26(["UC-26<br/>ユニットを削除する"])
+end
+
+Poster --- UC20
+Poster --- UC21
+Poster --- UC22
+Poster --- UC23
+Poster --- UC24
+Poster --- UC25
+Poster --- UC26
+
+class UC20,UC21,UC22,UC23,UC24,UC25,UC26 uc
