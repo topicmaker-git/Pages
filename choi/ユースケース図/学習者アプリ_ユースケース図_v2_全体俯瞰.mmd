@@ -1,0 +1,52 @@
+flowchart LR
+
+classDef actor fill:#e3f2fd,stroke:#01579b,stroke-width:2px,color:#000
+classDef abstract fill:#f5f5f5,stroke:#666,stroke-width:1px,stroke-dasharray:4 4,color:#333
+classDef ucgroup fill:#fff9c4,stroke:#827717,stroke-width:2px,color:#000
+classDef axis fill:#e1bee7,stroke:#4a148c,stroke-width:1px,color:#000
+classDef note fill:#f3e5f5,stroke:#4a148c,stroke-width:1px,stroke-dasharray:3 3,color:#000
+
+subgraph A["アクター"]
+    direction TB
+    Guest["ゲスト<br/>未認証"]:::actor
+    Member["《抽象》会員"]:::abstract
+    A1["【軸1 団体所属】<br/>無所属／一般／管理者"]:::axis
+    A2["【軸2 契約状態】<br/>無料／トライアル／有料／解約手続中"]:::axis
+    A3["【軸3 学習】<br/>学習者"]:::axis
+    A4["【軸4 投稿】<br/>投稿者"]:::axis
+    Guest -.->|認証| Member
+    Member --> A1
+    Member --> A2
+    Member --> A3
+    Member --> A4
+    Guest -.->|文脈に応じて| A3
+end
+
+subgraph U["ユースケース群 7枚"]
+    direction TB
+    U1["U-1 認証・アカウント<br/>13 UCs"]:::ucgroup
+    U2["U-2 契約・課金<br/>9 UCs"]:::ucgroup
+    U3["U-3 閲覧・学習<br/>11 UCs"]:::ucgroup
+    U4["U-4 お気に入り・コメント<br/>タイムライン 9 UCs"]:::ucgroup
+    U5["U-5 マイコース運営<br/>10 UCs<br/>局所 コース主催者"]:::ucgroup
+    U6["U-6 マイユニット投稿<br/>7 UCs"]:::ucgroup
+    U7["U-7 配信・公開操作<br/>6 UCs"]:::ucgroup
+end
+
+Guest -.->|認証系| U1
+Guest -.->|閲覧 成績なし| U3
+Guest -.->|閲覧系のみ| U4
+
+A1 ==>|団体所属が前提| U5
+
+A2 ==> U2
+A3 ==> U3
+A3 ==> U4
+A4 ==> U6
+A4 ==> U7
+
+note2["軸1→U-5 は<br/>「コース作成・運営は団体所属が前提」<br/>（無所属会員は不可）の表現"]:::note
+note3["U-5 主催者は局所アクター<br/>軸からは独立した文脈アクター"]:::note
+
+U5 -.- note2
+U5 -.- note3
