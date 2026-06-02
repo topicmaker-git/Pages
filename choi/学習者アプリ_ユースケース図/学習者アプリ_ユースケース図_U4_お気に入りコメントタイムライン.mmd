@@ -1,17 +1,13 @@
 flowchart TB
 
 classDef actor fill:#e3f2fd,stroke:#01579b,stroke-width:2px,color:#000
-classDef abstract fill:#f5f5f5,stroke:#666,stroke-width:1px,stroke-dasharray:4 4,color:#333
 classDef uc fill:#fff9c4,stroke:#827717,stroke-width:1px,color:#000
 
 subgraph A_Actors["アクター"]
     direction TB
-    Guest["ゲスト"]:::actor
-    Member["《抽象》会員<br/>無所属／一般／管理者"]:::abstract
-    Learner["学習者<br/>関与 軸3"]:::actor
-    Owner["コース主催者<br/>関与 軸3"]:::actor
-    Guest --> Learner
-    Member --> Learner
+    Guest["ゲスト<br/>閲覧系のみ"]:::actor
+    Learner["学習者<br/>軸3 会員"]:::actor
+    Owner["コース主催者<br/>UC-44 モデレーション用"]:::actor
 end
 
 subgraph UC_Fav["お気に入り 会員のみ"]
@@ -24,26 +20,31 @@ end
 subgraph UC_Comment["コメント"]
     direction TB
     UC43(["UC-43<br/>コメントを投稿する<br/>会員のみ"])
-    UC44(["UC-44<br/>コメントを削除する<br/>投稿者本人またはコース主催者"])
-    UC45(["UC-45<br/>コメント一覧を閲覧する"])
+    UC44(["UC-44<br/>コメントを削除する<br/>投稿者本人または主催者"])
+    UC45(["UC-45<br/>コメント一覧を閲覧する<br/>ゲスト含む"])
 end
 
-subgraph UC_Timeline["タイムライン v13新規 3種別"]
+subgraph UC_Timeline["タイムライン v15配信モデル対応"]
     direction TB
-    UCTLAll(["全体デッキ<br/>タイムラインを閲覧する"])
-    UCTLUnit(["ユニット内デッキ<br/>タイムラインを閲覧する"])
+    UCTLAll(["グローバル<br/>タイムラインを閲覧する<br/>ゲスト含む<br/>ユニット配信／デッキ配信が混在"])
+    UCTLUnit(["ユニット<br/>タイムラインを閲覧する<br/>ゲスト含む"])
     UCTLFav(["お気に入り<br/>タイムラインを閲覧する<br/>会員のみ"])
 end
 
-Member --- UC40
-Member --- UC41
-Member --- UC42
-Member --- UC43
-Member --- UC44
-Owner --- UC44
+Guest --- UC45
+Guest --- UCTLAll
+Guest --- UCTLUnit
+
+Learner --- UC40
+Learner --- UC41
+Learner --- UC42
+Learner --- UC43
+Learner --- UC44
 Learner --- UC45
 Learner --- UCTLAll
 Learner --- UCTLUnit
-Member --- UCTLFav
+Learner --- UCTLFav
+
+Owner --- UC44
 
 class UC40,UC41,UC42,UC43,UC44,UC45,UCTLAll,UCTLUnit,UCTLFav uc
