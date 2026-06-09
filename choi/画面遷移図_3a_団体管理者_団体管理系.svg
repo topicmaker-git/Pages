@@ -99,9 +99,10 @@
     <text x="72" y="418" class="node-id">A-M1</text>
     <text x="108" y="418" class="node-name">会員 一覧</text>
     <line x1="60" y1="428" x2="230" y2="428" stroke="#d8d3c4" stroke-width="0.5"/>
-    <text x="72" y="446" class="node-btn">→ ＋ 会員を招待</text>
-    <text x="72" y="462" class="node-btn">→ 詳細 / 行クリック</text>
-    <text x="72" y="478" class="node-tab">UC-03 入口 / 参照一覧</text>
+    <text x="72" y="444" class="node-btn">→ ＋ 会員を招待</text>
+    <text x="72" y="459" class="node-btn">→ 招待の一覧</text>
+    <text x="72" y="474" class="node-btn">→ 詳細 / 行クリック</text>
+    <text x="72" y="487" class="node-tab">UC-03 入口 / 参照一覧</text>
   </g>
 
   <!-- A-M2 -->
@@ -124,6 +125,17 @@
     <line x1="250" y1="538" x2="380" y2="538" stroke="#d8d3c4" stroke-width="0.5"/>
     <text x="262" y="556" class="node-btn">招待を送信</text>
     <text x="262" y="570" class="node-tab">UC-03</text>
+  </g>
+
+  <!-- A-M4 -->
+  <g>
+    <rect x="250" y="400" width="130" height="70" fill="#fff" stroke="#1a1a1a" stroke-width="1.5" rx="2"/>
+    <rect x="250" y="400" width="130" height="28" fill="#7a5a2a"/>
+    <text x="258" y="418" class="node-id">A-M4</text>
+    <text x="290" y="418" class="node-name">発行済み招待一覧</text>
+    <line x1="250" y1="428" x2="380" y2="428" stroke="#d8d3c4" stroke-width="0.5"/>
+    <text x="262" y="446" class="node-btn">取消 / 再招待</text>
+    <text x="262" y="462" class="node-tab">UC-52 / GET list</text>
   </g>
 
   <!-- === 団体コース系 === -->
@@ -191,6 +203,13 @@
     <rect x="490" y="620" width="200" height="50" fill="#f4f2ee" stroke="#999" stroke-width="1" stroke-dasharray="4 3" rx="2"/>
     <text x="590" y="640" text-anchor="middle" font-size="10" fill="#5a4a8a" font-weight="600">A-CM2 コースメンバー 招待</text>
     <text x="590" y="656" text-anchor="middle" class="node-tab">詳細は図3b(共通帯)を参照</text>
+  </g>
+
+  <!-- A-CM3 reference -->
+  <g>
+    <rect x="700" y="620" width="210" height="50" fill="#f4f2ee" stroke="#999" stroke-width="1" stroke-dasharray="4 3" rx="2"/>
+    <text x="805" y="640" text-anchor="middle" font-size="10" fill="#5a4a8a" font-weight="600">A-CM3 発行済みコース招待一覧</text>
+    <text x="805" y="656" text-anchor="middle" class="node-tab">詳細は図3b(共通帯)を参照</text>
   </g>
 
   <!-- === Edges === -->
@@ -284,6 +303,18 @@
     <path d="M 580 605 L 580 618" stroke="#1a1a1a" stroke-width="1.2" fill="none" marker-end="url(#arrow)"/>
     <rect x="585" y="605" width="60" height="12" class="edge-label-bg"/>
     <text x="615" y="615" text-anchor="middle" class="edge-label">＋ 招待</text>
+  </g>
+
+  <!-- E19b: A-C2 → A-CM3 -->
+  <g>
+    <path d="M 720 605 L 720 618" stroke="#1a1a1a" stroke-width="1.2" fill="none" marker-end="url(#arrow)"/>
+    <rect x="725" y="605" width="74" height="12" class="edge-label-bg"/>
+    <text x="762" y="615" text-anchor="middle" class="edge-label">招待の一覧</text>
+  </g>
+
+  <!-- E13b: A-M1 → A-M4 (招待の一覧) -->
+  <g>
+    <line x1="230" y1="414" x2="248" y2="414" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
   </g>
 
   <!-- E32: A-CM2 → A-C2 -->
