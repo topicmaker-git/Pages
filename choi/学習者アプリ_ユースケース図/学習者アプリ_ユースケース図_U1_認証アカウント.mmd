@@ -4,6 +4,7 @@ classDef actor fill:#e3f2fd,stroke:#01579b,stroke-width:2px,color:#000
 classDef abstract fill:#f5f5f5,stroke:#666,stroke-width:1px,stroke-dasharray:4 4,color:#333
 classDef uc fill:#fff9c4,stroke:#827717,stroke-width:1px,color:#000
 classDef ucShared fill:#e0e0e0,stroke:#424242,stroke-width:1px,color:#000
+classDef note fill:#fff3e0,stroke:#e65100,stroke-width:1px,stroke-dasharray:3 3,color:#000
 
 subgraph A_Guest["未認証アクター"]
     Guest["ゲスト"]:::actor
@@ -43,13 +44,16 @@ subgraph UC_Acc["アカウント維持"]
     UC_PwdChg(["パスワード変更"])
 end
 
-subgraph UC_Invite["招待受諾"]
+subgraph UC_Invite["招待受諾・辞退"]
     direction TB
     UC_OrgAccept(["団体招待を承諾する<br/>UC-50／UC-51"])
-    UC_CrsAccept(["コース招待を承諾する<br/>UC-15 拡張"])
+    UC_CrsAccept(["コース招待を承諾する<br/>UC-15 拡張<br/>ログイン必須・会員のみ"])
+    UC_Decline(["招待を辞退する<br/>団体／コース共通<br/>ログイン不要"])
 end
 
 UC_OTP(["《共通》<br/>メールアドレス所有確認 OTP"]):::ucShared
+
+NoteInvite["承諾はログイン必須・辞退はログイン不要<br/>受け口は公開ランディング<br/>団体 IV-1／コース IV-2<br/>コース承諾は団体所属済みの会員が前提"]:::note
 
 Guest --- UC_RegMail
 Guest --- UC_RegOAuth
@@ -57,7 +61,7 @@ Guest --- UC_LoginPwd
 Guest --- UC_LoginOAuth
 Guest --- UC_PwdReset
 Guest --- UC_OrgAccept
-Guest --- UC_CrsAccept
+Guest --- UC_Decline
 
 Member --- UC_Logout
 Member --- UC_Profile
@@ -65,9 +69,12 @@ Member --- UC_MailChg
 Member --- UC_PwdChg
 Member --- UC_OrgAccept
 Member --- UC_CrsAccept
+Member --- UC_Decline
+
+UC_Decline -.- NoteInvite
 
 UC_RegMail -. "&lt;&lt;include&gt;&gt;" .-> UC_OTP
 UC_RegOAuth -. "&lt;&lt;include&gt;&gt;" .-> UC_OTP
 UC_MailChg -. "&lt;&lt;include&gt;&gt;" .-> UC_OTP
 
-class UC_RegMail,UC_RegOAuth,UC_LoginPwd,UC_LoginOAuth,UC_PwdReset,UC_Logout,UC_Profile,UC_MailChg,UC_PwdChg,UC_OrgAccept,UC_CrsAccept uc
+class UC_RegMail,UC_RegOAuth,UC_LoginPwd,UC_LoginOAuth,UC_PwdReset,UC_Logout,UC_Profile,UC_MailChg,UC_PwdChg,UC_OrgAccept,UC_CrsAccept,UC_Decline uc
