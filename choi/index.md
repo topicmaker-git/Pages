@@ -42,4 +42,4 @@
 
 ## ワイヤーフレーム
 
-- [Part3](https://topicmaker-git.github.io/Pages/choi/%E5%AD%A6%E7%BF%92%E8%80%85%E3%82%A2%E3%83%97%E3%83%AA_%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%BC%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0_Part3.html)
+- [ワイヤーフレーム](https://topicmaker-git.github.io/Pages/choi/%E5%AD%A6%E7%BF%92%E8%80%85%E3%82%A2%E3%83%97%E3%83%AA_%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%BC%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0.html)
