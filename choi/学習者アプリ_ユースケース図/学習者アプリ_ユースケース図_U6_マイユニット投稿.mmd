@@ -31,8 +31,15 @@ end
 subgraph UC_Org["整理・削除"]
     direction TB
     UC25(["UC-25<br/>ユニットの表示順を変更する"])
-    UC26(["UC-26<br/>ユニットを削除する"])
+    UC26(["UC-26<br/>ユニットを削除する<br/>配下とお気に入り・コメントを連鎖削除"])
 end
+
+subgraph UC_CommentMod["コメント管理 A-CMT経由 v15.5"]
+    direction TB
+    UC46(["UC-46<br/>他者コメントをモデレーション削除する<br/>自ユニット及び配下パート・デッキ対象・物理削除"])
+end
+
+NoteCMT["マイユニット詳細（A-MU2）ヘッダの<br/>コメント数（集約・visibility動的評価）を押下で<br/>A-CMT（集約コメント一覧＝UC-45）へ遷移し各行で UC-46 削除<br/>お気に入り数はレベル別表示のみ（遷移なし）<br/>団体ユニット（A-U2）からの団体管理者モデレーションは学習者アプリ対象外"]:::note
 
 Poster --- UC20
 Poster --- UC21
@@ -41,5 +48,8 @@ Poster --- UC23
 Poster --- UC24
 Poster --- UC25
 Poster --- UC26
+Poster --- UC46
 
-class UC20,UC21,UC22,UC23,UC24,UC25,UC26 uc
+UC46 -.- NoteCMT
+
+class UC20,UC21,UC22,UC23,UC24,UC25,UC26,UC46 uc

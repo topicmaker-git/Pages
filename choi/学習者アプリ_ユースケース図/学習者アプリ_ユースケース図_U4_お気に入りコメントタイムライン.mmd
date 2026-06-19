@@ -4,17 +4,10 @@ classDef actor fill:#e3f2fd,stroke:#01579b,stroke-width:2px,color:#000
 classDef uc fill:#fff9c4,stroke:#827717,stroke-width:1px,color:#000
 classDef note fill:#fff3e0,stroke:#e65100,stroke-width:1px,stroke-dasharray:3 3,color:#000
 
-subgraph A_Actors["アクター（学習・閲覧）"]
+subgraph A_Actors["アクター（B系 学習・閲覧）"]
     direction TB
     Guest["ゲスト<br/>閲覧系のみ"]:::actor
     Learner["学習者<br/>軸3 会員"]:::actor
-end
-
-subgraph A_Mod["アクター（コメントモデレーション・UC-46）"]
-    direction TB
-    Owner["コース主催者<br/>自コース対象のコメント"]:::actor
-    Poster["ユニット投稿者<br/>軸4 投稿者・自ユニット配下対象"]:::actor
-    OrgAdmin["団体管理者<br/>軸1・自団体メンバー作成分"]:::actor
 end
 
 subgraph UC_Fav["お気に入り 会員のみ"]
@@ -24,11 +17,10 @@ subgraph UC_Fav["お気に入り 会員のみ"]
     UC42(["UC-42<br/>お気に入り一覧を見る<br/>B-07 異種混合・時系列<br/>閲覧可否を評価し不可は非表示扱い"])
 end
 
-subgraph UC_Comment["コメント"]
+subgraph UC_Comment["コメント B系ビューア 投稿・閲覧・本人削除"]
     direction TB
     UC43(["UC-43<br/>コメントを投稿する<br/>会員のみ"])
     UC44(["UC-44<br/>自分のコメントを削除する<br/>投稿者本人"])
-    UC46(["UC-46<br/>他者のコメントを削除する<br/>モデレーション・物理削除"])
     UC45(["UC-45<br/>コメント一覧を閲覧する<br/>ゲスト含む<br/>階層集約（上位が配下を巻取り）"])
 end
 
@@ -39,7 +31,9 @@ subgraph UC_Timeline["タイムライン v15配信モデル対応"]
     UCTLFav(["お気に入り<br/>タイムラインを閲覧する<br/>会員のみ"])
 end
 
-NoteV154["【v15.4 お気に入り・コメントQ&A 追従】<br/>削除連鎖：対象（コース／ユニット／パート／デッキ）削除で<br/>お気に入り・コメントも連鎖削除（パート・デッキ単体削除も含む）<br/>お気に入り一覧：閲覧可否を評価し不可は public_id 非返却（漏洩防止）<br/>お気に入り数：直接数／集約数（配下含む延べ・非公開除外）の2本立て<br/>コメント：階層集約表示・閲覧可能ターゲットのみ・対象種別ラベル付き"]:::note
+NoteV154["【v15.4 お気に入り・コメント仕様 追従】<br/>削除連鎖：対象（コース／ユニット／パート／デッキ）削除で<br/>お気に入り・コメントも連鎖削除（パート・デッキ単体削除も含む）<br/>お気に入り一覧：閲覧可否を評価し不可は public_id 非返却（漏洩防止）<br/>お気に入り数：直接数／集約数（配下含む延べ・非公開除外）の2本立て<br/>コメント：階層集約表示・閲覧可能ターゲットのみ・対象種別ラベル付き"]:::note
+
+NoteMod["【v15.5 モデレーション削除 UC-46 はB系ビューアに無い】<br/>他者コメントのモデレーション削除（UC-46）は A系 A-CMT の操作で<br/>作成者文脈（マイコース→U-5／マイユニット→U-6）に配置<br/>B系ビューア（B-02/03/05）でのその場削除は本フェーズ対象外"]:::note
 
 Guest --- UC45
 Guest --- UCTLAll
@@ -55,11 +49,7 @@ Learner --- UCTLAll
 Learner --- UCTLUnit
 Learner --- UCTLFav
 
-Owner --- UC46
-Poster --- UC46
-OrgAdmin --- UC46
-
 UC42 -.- NoteV154
-UC45 -.- NoteV154
+UC45 -.- NoteMod
 
-class UC40,UC41,UC42,UC43,UC44,UC45,UC46,UCTLAll,UCTLUnit,UCTLFav uc
+class UC40,UC41,UC42,UC43,UC44,UC45,UCTLAll,UCTLUnit,UCTLFav uc

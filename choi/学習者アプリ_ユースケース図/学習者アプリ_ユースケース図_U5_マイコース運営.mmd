@@ -2,6 +2,7 @@ flowchart TB
 
 classDef actor fill:#e3f2fd,stroke:#01579b,stroke-width:2px,color:#000
 classDef uc fill:#fff9c4,stroke:#827717,stroke-width:1px,color:#000
+classDef note fill:#fff3e0,stroke:#e65100,stroke-width:1px,stroke-dasharray:3 3,color:#000
 
 subgraph A_Actors["アクター U-5 局所"]
     direction TB
@@ -26,8 +27,15 @@ subgraph UC_Member["メンバー管理"]
 end
 
 subgraph UC_Delete["コース削除"]
-    UC17(["UC-17<br/>コースを削除する"])
+    UC17(["UC-17<br/>コースを削除する<br/>お気に入り・コメントを連鎖削除"])
 end
+
+subgraph UC_CommentMod["コメント管理 A-CMT経由 v15.5"]
+    direction TB
+    UC46(["UC-46<br/>他者コメントをモデレーション削除する<br/>自コース対象・物理削除"])
+end
+
+NoteCMT["マイコース詳細（A-MC2）ヘッダの<br/>コメント数（集約・visibility動的評価）を押下で<br/>A-CMT（集約コメント一覧＝UC-45）へ遷移し各行で UC-46 削除<br/>お気に入り数はレベル別表示のみ（遷移なし）<br/>団体コース（A-C2）からの団体管理者モデレーションは学習者アプリ対象外"]:::note
 
 Owner --- UC10
 Owner --- UC11
@@ -39,5 +47,8 @@ Owner --- UC15
 Owner --- UC15a
 Owner --- UCExclude
 Owner --- UC17
+Owner --- UC46
 
-class UC10,UC11,UC12,UC13,UC14,UC16,UC15,UC15a,UCExclude,UC17 uc
+UC46 -.- NoteCMT
+
+class UC10,UC11,UC12,UC13,UC14,UC16,UC15,UC15a,UCExclude,UC17,UC46 uc
