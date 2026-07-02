@@ -7,8 +7,11 @@ classDef note fill:#fff3e0,stroke:#e65100,stroke-width:1px,stroke-dasharray:3 3,
 subgraph A_Actors["アクター"]
     direction TB
     Poster["投稿者<br/>軸4"]:::actor
-    PosterNote["事前条件で識別<br/>(a) コース主催者として自コースに投稿<br/>(b) コースメンバーとして所属コースに投稿<br/>(c) コース非帰属ユニット投稿者"]:::note
+    PosterNote["事前条件で識別<br/>(a) コース主催者として自コースに投稿<br/>(b) コース非帰属ユニット投稿者<br/>※コースメンバー（共同編集者）は v24 で局所アクターに分離"]:::note
     Poster -.- PosterNote
+    CoEditor["コースメンバー<br/>共同編集者（局所・v24）"]:::actor
+    CoEditorNote["主催者が招待で編集権を分与した会員（UC-15b）。<br/>当該コースの帰属ユニット（投稿者を問わず）を<br/>連帯責任で編集・投稿/帰属・表示順・削除できる。<br/>コース自体の設定・メンバー管理・移譲・削除・コース表示順は不可（主催者専権）。<br/>非帰属ユニットは対象外。<br/>権限（投稿者ドメイン）であり閲覧可否（学習者ドメイン）には不干渉。"]:::note
+    CoEditor -.- CoEditorNote
 end
 
 subgraph UC_Post["投稿"]
@@ -34,6 +37,11 @@ subgraph UC_Org["整理・削除"]
     UC26(["UC-26<br/>ユニットを削除する<br/>配下とお気に入り・コメントを連鎖削除"])
 end
 
+subgraph UC_CoEdit["共同編集（コースメンバー・v24）"]
+    direction TB
+    UC15b(["UC-15b<br/>コースメンバーとして共同編集する<br/>帰属ユニットを連帯責任で編集・投稿/帰属・表示順・削除"])
+end
+
 subgraph UC_CommentMod["コメント管理 A-CMT経由 v15.5"]
     direction TB
     UC46(["UC-46<br/>他者コメントをモデレーション削除する<br/>自ユニット及び配下パート・デッキ対象・物理削除"])
@@ -52,7 +60,15 @@ Poster --- UC25
 Poster --- UC26
 Poster --- UC46
 
+CoEditor --- UC15b
+CoEditor --- UC20
+CoEditor --- UC21
+CoEditor --- UC22
+CoEditor --- UC24
+CoEditor --- UC25
+CoEditor --- UC26
+
 UC46 -.- NoteCMT
 UC20 -.- NoteUC20
 
-class UC20,UC21,UC22,UC23,UC24,UC25,UC26,UC46 uc
+class UC15b,UC20,UC21,UC22,UC23,UC24,UC25,UC26,UC46 uc
