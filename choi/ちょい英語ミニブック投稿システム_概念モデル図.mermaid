@@ -67,15 +67,32 @@ classDiagram
 詳細はユースケース仕様書「公開範囲の定義」を参照"
 
     class Account["会員（アカウント）"] {
-        +String 名前
-        +String メールアドレス
-        +String パスワード
+        +ID ユーザーID
+        +String 氏名
         +String ニックネーム
+        +String アイコン
+        +String 自己紹介
+        +String URL
         +String 所属部署
         +enum 団体ロール : 管理者 / 一般
-        +String 電話
-        +String 携帯番号
+        +String 電話番号
+        +String 携帯電話番号
+        +String メールアドレス
+        +String パスワード
+        +String OAuth連携
     }
+
+    note for Account "属性の3層構造(外部環境):
+・enHack層(認証基盤): ユーザーID(User.id)/ メールアドレス /
+  パスワード / OAuth連携。認証は enHack アプリが提供する
+・ちょい英語 profile(初期定義): name / introduction / url / icon
+  (初期は null)
+・本サブシステムで拡張: nickname を新設(登録フローの
+  ニックネーム入力の登録先を name から変更)し、name を
+  「氏名」として再定義。所属部署 / 電話番号 / 携帯電話番号 / 団体ロール
+  を追加
+編集責務(ちょい英語本体 / 団体コンソール)の詳細は
+ユーザー属性について.md を参照"
 
     %% === コース ===
     %% 公開enum: 公開 / プライベート公開(unlisted・参照保持者のみ) / 団体限定公開 / 非公開
