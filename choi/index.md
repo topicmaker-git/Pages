@@ -11,6 +11,11 @@
 - [招待フロー_コース](https://topicmaker-git.github.io/Pages/markdown.html?choi/%E6%8B%9B%E5%BE%85%E3%83%95%E3%83%AD%E3%83%BC_%E3%82%B3%E3%83%BC%E3%82%B9.md)
 - [投稿データ / メディアパック仕様](https://topicmaker-git.github.io/Pages/choi/%E6%8A%95%E7%A8%BF%E3%83%87%E3%83%BC%E3%82%BF_%E3%83%A1%E3%83%87%E3%82%A3%E3%82%A2%E3%83%91%E3%83%83%E3%82%AF%E4%BB%95%E6%A7%98)
 
+## AB教材ファミリー(choi/ab/)
+
+- [AB教材規約](https://topicmaker-git.github.io/Pages/markdown.html?choi/ab/AB%E6%95%99%E6%9D%90%E8%A6%8F%E7%B4%84.md)
+- [変換ツール要件](https://topicmaker-git.github.io/Pages/markdown.html?choi/ab/%E5%A4%89%E6%8F%9B%E3%83%84%E3%83%BC%E3%83%AB%E8%A6%81%E4%BB%B6.md)
+
 # 学習者アプリ
 
 ## 概念モデル v15
