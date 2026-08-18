@@ -16,6 +16,11 @@
 - [AB教材規約](https://topicmaker-git.github.io/Pages/markdown.html?choi/ab/AB%E6%95%99%E6%9D%90%E8%A6%8F%E7%B4%84.md)
 - [変換ツール要件](https://topicmaker-git.github.io/Pages/markdown.html?choi/ab/%E5%A4%89%E6%8F%9B%E3%83%84%E3%83%BC%E3%83%AB%E8%A6%81%E4%BB%B6.md)
 
+## アプリ開発AI向け指示書(choi/vibe/)
+
+- [DATA.md(教材データ読み込み規約と自己改造指針)](https://topicmaker-git.github.io/Pages/markdown.html?choi/vibe/DATA.md)
+- [添え書きDATA.md](https://topicmaker-git.github.io/Pages/markdown.html?choi/vibe/%E6%B7%BB%E3%81%88%E6%9B%B8%E3%81%8DDATA.md)
+
 # 学習者アプリ
 
 ## 概念モデル v15
