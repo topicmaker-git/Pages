@@ -10,7 +10,7 @@
 - [招待フロー_団体](https://topicmaker-git.github.io/Pages/markdown.html?choi/%E6%8B%9B%E5%BE%85%E3%83%95%E3%83%AD%E3%83%BC_%E5%9B%A3%E4%BD%93.md)
 - [招待フロー_コース](https://topicmaker-git.github.io/Pages/markdown.html?choi/%E6%8B%9B%E5%BE%85%E3%83%95%E3%83%AD%E3%83%BC_%E3%82%B3%E3%83%BC%E3%82%B9.md)
 - [投稿データ / メディアパック仕様](https://topicmaker-git.github.io/Pages/choi/%E6%8A%95%E7%A8%BF%E3%83%87%E3%83%BC%E3%82%BF_%E3%83%A1%E3%83%87%E3%82%A3%E3%82%A2%E3%83%91%E3%83%83%E3%82%AF%E4%BB%95%E6%A7%98)
-- [ユーザー別学習状態・プリファレンス保存取得 要求仕様(ドラフト)](https://topicmaker-git.github.io/Pages/markdown.html?choi/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E5%88%A5%E5%AD%A6%E7%BF%92%E7%8A%B6%E6%85%8B%E3%83%BB%E3%83%97%E3%83%AA%E3%83%95%E3%82%A1%E3%83%AC%E3%83%B3%E3%82%B9%E4%BF%9D%E5%AD%98%E5%8F%96%E5%BE%97_%E8%A6%81%E6%B1%82%E4%BB%95%E6%A7%98.md) — サーバーサイド承認前のドラフト
+- [ユーザー別学習状態・プリファレンス保存取得 要求仕様](https://topicmaker-git.github.io/Pages/markdown.html?choi/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E5%88%A5%E5%AD%A6%E7%BF%92%E7%8A%B6%E6%85%8B%E3%83%BB%E3%83%97%E3%83%AA%E3%83%95%E3%82%A1%E3%83%AC%E3%83%B3%E3%82%B9%E4%BF%9D%E5%AD%98%E5%8F%96%E5%BE%97_%E8%A6%81%E6%B1%82%E4%BB%95%E6%A7%98.md)
 
 ## AB教材ファミリー(choi/ab/)
 
