@@ -21,6 +21,10 @@
 
 - [DATA.md(教材データ読み込み規約と自己改造指針)](https://topicmaker-git.github.io/Pages/markdown.html?choi/vibe/DATA.md)
 - [添え書きDATA.md](https://topicmaker-git.github.io/Pages/markdown.html?choi/vibe/%E6%B7%BB%E3%81%88%E6%9B%B8%E3%81%8DDATA.md)
+- [LOGIN.md(ログイン状態の確認規約と自己改造指針)](https://topicmaker-git.github.io/Pages/markdown.html?choi/vibe/LOGIN.md)
+- [添え書きLOGIN.md](https://topicmaker-git.github.io/Pages/markdown.html?choi/vibe/%E6%B7%BB%E3%81%88%E6%9B%B8%E3%81%8DLOGIN.md)
+- [STATUS.md(学習状態・プリファレンスの保存取得規約と自己改造指針)](https://topicmaker-git.github.io/Pages/markdown.html?choi/vibe/STATUS.md)
+- [添え書きSTATUS.md](https://topicmaker-git.github.io/Pages/markdown.html?choi/vibe/%E6%B7%BB%E3%81%88%E6%9B%B8%E3%81%8DSTATUS.md)
 
 # 学習者アプリ
 
